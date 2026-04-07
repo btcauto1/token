@@ -1,0 +1,154 @@
+/**
+ *Submitted for verification at BscScan.com on 2026-02-20
+*/
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+/*
+  Token: bitcoin auto (BTC.a)
+  Decimals: 18
+  Supply: 2,600,000
+*/
+
+abstract contract Context {
+    function _msgSender() internal view virtual returns (address) {
+        return msg.sender;
+    }
+}
+
+abstract contract Ownable is Context {
+    address private _owner;
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    constructor() {
+        _owner = _msgSender();
+        emit OwnershipTransferred(address(0), _owner);
+    }
+
+    modifier onlyOwner() {
+        require(_owner == _msgSender(), "Not owner");
+        _;
+    }
+
+    function owner() public view returns (address) {
+        return _owner;
+    }
+
+    function transferOwnership(address newOwner) external onlyOwner {
+        require(newOwner != address(0), "Zero address");
+        emit OwnershipTransferred(_owner, newOwner);
+        _owner = newOwner;
+    }
+}
+
+interface IERC20 {
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+
+    function totalSupply() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function allowance(address owner, address spender) external view returns (uint256);
+
+    function transfer(address to, uint256 amount) external returns (bool);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
+}
+
+interface IERC20Metadata is IERC20 {
+    function name() external pure returns (string memory);
+    function symbol() external pure returns (string memory);
+    function decimals() external pure returns (uint8);
+}
+
+contract Token is Ownable, IERC20Metadata {
+
+    string private constant _NAME = "bitcoin auto";
+    string private constant _SYMBOL = "BTC.a";
+    uint8 private constant _DECIMALS = 18;
+
+    uint256 private _totalSupply;
+
+    mapping(address => uint256) private _balances;
+    mapping(address => mapping(address => uint256)) private _allowances;
+
+    string public tokenURI =
+        "https://red-gentle-narwhal-638.mypinata.cloud/ipfs/bafybeig6k2t2dgvyfkty4vu4tpwv5epvfjdrybquhl7ezvem3xdlyerwam";
+
+    // -------- metadata --------
+    function name() external pure override returns (string memory) { return _NAME; }
+    function symbol() external pure override returns (string memory) { return _SYMBOL; }
+    function decimals() external pure override returns (uint8) { return _DECIMALS; }
+
+    // -------- views --------
+    function totalSupply() external view override returns (uint256) { return _totalSupply; }
+
+    function balanceOf(address account) external view override returns (uint256) {
+        return _balances[account];
+    }
+
+    function allowance(address owner_, address spender) external view override returns (uint256) {
+        return _allowances[owner_][spender];
+    }
+
+    // -------- constructor --------
+    constructor() {
+        uint256 supply = 2_600_000 * 10 ** uint256(_DECIMALS);
+        _totalSupply = supply;
+        _balances[_msgSender()] = supply;
+        emit Transfer(address(0), _msgSender(), supply);
+    }
+
+    // -------- ERC20 --------
+    function transfer(address to, uint256 amount) external override returns (bool) {
+        _transfer(_msgSender(), to, amount);
+        return true;
+    }
+
+    function approve(address spender, uint256 amount) external override returns (bool) {
+        _approve(_msgSender(), spender, amount);
+        return true;
+    }
+
+    function transferFrom(address from, address to, uint256 amount) external override returns (bool) {
+        uint256 currentAllowance = _allowances[from][_msgSender()];
+        require(currentAllowance >= amount, "Allowance low");
+
+        if (currentAllowance != type(uint256).max) {
+            unchecked {
+                _allowances[from][_msgSender()] = currentAllowance - amount;
+            }
+            emit Approval(from, _msgSender(), _allowances[from][_msgSender()]);
+        }
+
+        _transfer(from, to, amount);
+        return true;
+    }
+
+    // -------- internal --------
+    function _transfer(address from, address to, uint256 amount) internal {
+        require(from != address(0) && to != address(0), "Zero address");
+
+        uint256 balance = _balances[from];
+        require(balance >= amount, "Balance low");
+
+        unchecked {
+            _balances[from] = balance - amount;
+            _balances[to] += amount;
+        }
+
+        emit Transfer(from, to, amount);
+    }
+
+    function _approve(address owner_, address spender, uint256 amount) internal {
+        require(owner_ != address(0) && spender != address(0), "Zero address");
+
+        _allowances[owner_][spender] = amount;
+        emit Approval(owner_, spender, amount);
+    }
+
+    // optional metadata update
+    function setTokenURI(string calldata newURI) external onlyOwner {
+        tokenURI = newURI;
+    }
+}
