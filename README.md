@@ -13,9 +13,9 @@ The system operates entirely on-chain and transactions are verified by the block
 Token Information
 Parameter	Value
 Name	BTC.auto
-Symbol	BTC.auto
+Symbol	BTC.a
 Standard	BEP-20 Compatible
-Decimals	6
+Decimals	18
 Total Supply	2,600,000
 Network	EVM Compatible Network
 Type	Decentralized Token
