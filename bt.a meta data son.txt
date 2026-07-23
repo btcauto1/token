@@ -1,0 +1,18 @@
+{
+  "name": "bitcoin auto",
+  "symbol": "BTC.a",
+  "description": "BTC.a (Bitcoin Auto) is a decentralized digital asset built on BNB Smart Chain (BEP-20), focused on secure, transparent, and efficient blockchain transactions.",
+  "image": "https://sapphire-obedient-slug-671.mypinata.cloud/ipfs/bafybeiehydguwhscdkaeb2f3yniig5jwk2v5wohvnwcsnpx6743wjeqdgu",
+  "external_url": "https://btcauto1.com",
+  "homepage": "https://btcauto1.com",
+  "contract_address": "0xA59560369C2f5f7D12a3B5d5E96d0005aD06b624",
+  "chain": "BNB Smart Chain",
+  "standard": "BEP-20",
+  "decimals": 18,
+  "total_supply": "2600000",
+  "explorer": "https://bscscan.com/token/0xA59560369C2f5f7D12a3B5d5E96d0005aD06b624",
+  "links": {
+    "website": "https://btcauto1.com",
+    "explorer": "https://bscscan.com/token/0xA59560369C2f5f7D12a3B5d5E96d0005aD06b624"
+  }
+}
